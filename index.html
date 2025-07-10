@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Trò Chơi Wordsearch Ngoại Hình, Tính Cách, Thực Phẩm, Lễ Hội</title>
+    <title>Trò Chơi Wordsearch Ngoại Hình, Tính Cách, Thực Phẩm</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
@@ -33,13 +33,13 @@
             touch-action: none;
         }
         .cell {
-            width: 35px;
-            height: 35px;
+            width: 38px;
+            height: 38px;
             display: inline-flex;
             justify-content: center;
             align-items: center;
             border: 1px solid #ddd;
-            font-size: 16px;
+            font-size: 18px;
             text-transform: uppercase;
             cursor: pointer;
             transition: background-color 0.2s;
@@ -51,19 +51,26 @@
             font-weight: bold;
             color: white;
         }
+        .cell.hint {
+            background-color: #ffff99;
+        }
         #word-list {
             max-width: 300px;
         }
         #word-list h3 {
             margin-top: 0;
+            font-size: 20px;
         }
         #word-list ul {
             list-style: none;
             padding: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
         #word-list li {
             margin: 8px 0;
-            font-size: 16px;
+            font-size: 18px;
         }
         #word-list li.found {
             text-decoration: line-through;
@@ -83,7 +90,7 @@
             background-color: #0056b3;
         }
         #status, #high-score, #timer, #error-message {
-            font-size: 16px;
+            font-size: 18px;
             margin-top: 10px;
             font-weight: bold;
         }
@@ -92,16 +99,22 @@
         }
         @media (max-width: 768px) {
             .cell {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
+                width: 34px;
+                height: 34px;
+                font-size: 16px;
             }
             #puzzle {
-                grid-template-columns: repeat(40, 28px);
+                grid-template-columns: repeat(25, 34px);
             }
             #word-list {
                 max-width: 100%;
                 margin-top: 20px;
+            }
+            #word-list ul {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            #word-list li {
+                font-size: 18px;
             }
             .container {
                 flex-direction: column;
@@ -114,7 +127,7 @@
     <div class="container">
         <div>
             <div id="puzzle"></div>
-            <div id="status">Đã tìm: 0/50 từ</div>
+            <div id="status">Đã tìm: 0/30 từ</div>
             <div id="timer">Thời gian: 00:00</div>
             <div id="high-score">Điểm cao: 0 từ, Thời gian tốt nhất: chưa có</div>
             <div id="error-message"></div>
@@ -127,38 +140,27 @@
     </div>
     <script>
         const words = [
-            'young', 'tall', 'black', 'mid-twenties', 'short', 'slim', 'curly', 'old', 'blue', 'chubby',
-            'brown', 'straight', 'long', 'of medium height', 'blond', 'Age', 'Hair', 'Weight', 'Height',
-            'talkative', 'cheerful', 'impatient', 'bossy', 'generous', 'popular', 'selfish', 'honest',
-            'energetic', 'vibrant', 'pull it off with', 'orange', 'steak', 'pasta', 'cabbage', 'rice',
-            'chicken', 'egg', 'milk', 'fish', 'cereal', 'grapes', 'bread', 'biscuits', 'butter',
-            'fruit & vegetables', 'carbohydrates', 'proteins', 'fats', 'paint your face',
-            'wear traditional clothes', 'play games', 'eat a traditional meal', 'watch a fireworks display',
-            'listen to a band'
+            'young', 'tall', 'black', 'short', 'slim', 'curly', 'old', 'blue', 'chubby', 'brown',
+            'straight', 'long', 'blond', 'Age', 'Hair', 'Weight', 'Height', 'talkative', 'cheerful',
+            'impatient', 'bossy', 'generous', 'popular', 'selfish', 'honest', 'energetic', 'vibrant',
+            'orange', 'steak', 'pasta'
         ].map(word => word.toUpperCase().replace(/[- &]/g, ''));
 
         const displayWords = [
-            'young', 'tall', 'black', 'mid-twenties', 'short', 'slim', 'curly', 'old', 'blue', 'chubby',
-            'brown', 'straight', 'long', 'of medium height', 'blond', 'Age', 'Hair', 'Weight', 'Height',
-            'talkative', 'cheerful', 'impatient', 'bossy', 'generous', 'popular', 'selfish', 'honest',
-            'energetic', 'vibrant', 'pull it off with', 'orange', 'steak', 'pasta', 'cabbage', 'rice',
-            'chicken', 'egg', 'milk', 'fish', 'cereal', 'grapes', 'bread', 'biscuits', 'butter',
-            'fruit & vegetables', 'carbohydrates', 'proteins', 'fats', 'paint your face',
-            'wear traditional clothes', 'play games', 'eat a traditional meal', 'watch a fireworks display',
-            'listen to a band'
+            'young', 'tall', 'black', 'short', 'slim', 'curly', 'old', 'blue', 'chubby', 'brown',
+            'straight', 'long', 'blond', 'Age', 'Hair', 'Weight', 'Height', 'talkative', 'cheerful',
+            'impatient', 'bossy', 'generous', 'popular', 'selfish', 'honest', 'energetic', 'vibrant',
+            'orange', 'steak', 'pasta'
         ];
 
         const colorSets = [
             '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6',
             '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3',
             '#808000', '#ffd8b1', '#000075', '#808080', '#ff4500', '#da70d6', '#eee8aa', '#98fb98',
-            '#1e90ff', '#ff69b4', '#ba55d3', '#cd5c5c', '#20b2aa', '#9932cc', '#ff6347', '#00ced1',
-            '#ff7f50', '#4682b4', '#9acd32', '#dc143c', '#00b7eb', '#ff4040', '#228b22', '#ff00ff',
-            '#7b68ee', '#deb887', '#ff1493', '#6b8e23', '#b22222', '#20b2aa', '#8b008b', '#00ff7f',
-            '#b8860b', '#5f9ea0'
-        ]; // 50 màu
+            '#1e90ff', '#ff69b4', '#ba55d3', '#cd5c5c', '#20b2aa', '#9932cc'
+        ]; // 30 colors
 
-        const gridSize = 40;
+        const gridSize = 25;
         let grid = [];
         let selectedCells = [];
         let foundWords = [];
@@ -169,7 +171,7 @@
         let timerInterval = null;
         let wordColors = {};
         let initAttempts = 0;
-        const maxInitAttempts = 5;
+        const maxInitAttempts = 15;
 
         function initGrid() {
             grid = Array(gridSize).fill().map(() => Array(gridSize).fill(''));
@@ -187,7 +189,14 @@
             } else {
                 document.getElementById('error-message').textContent = '';
                 fillEmptyCells();
-                console.log('Hướng đặt từ:', placedWordDirections);
+                showInitialHint();
+                console.table(placedWordDirections.map(({ word, direction, reverse, start }) => ({
+                    Từ: word,
+                    Hướng: direction,
+                    Ngược: reverse,
+                    'Hàng Bắt Đầu': start.row,
+                    'Cột Bắt Đầu': start.col
+                })));
             }
         }
 
@@ -204,19 +213,19 @@
             ];
 
             const sortedWords = words.map((word, index) => ({ word, index }))
-                .sort((a, b) => b.word.length - a.word.length);
+                .sort((a, b) => a.word.length - b.word.length); // Prioritize shorter words
 
             sortedWords.forEach(({ word, index }) => {
                 let placed = false;
                 let attempts = 0;
-                const maxAttempts = 1500;
+                const maxAttempts = 3000;
 
                 while (!placed && attempts < maxAttempts) {
                     attempts++;
                     const dir = directions[Math.floor(Math.random() * directions.length)];
                     const row = Math.floor(Math.random() * gridSize);
                     const col = Math.floor(Math.random() * gridSize);
-                    const reverse = Math.random() > 0.5;
+                    const reverse = Math.random() > 0.9; // 10% chance of reverse
                     const wordToPlace = reverse ? word.split('').reverse().join('') : word;
 
                     if (canPlaceWord(wordToPlace, row, col, dir)) {
@@ -273,10 +282,47 @@
             }
         }
 
+        function showInitialHint() {
+            const hintWords = [];
+            while (hintWords.length < 3 && placedWordDirections.length > 0) {
+                const index = Math.floor(Math.random() * placedWordDirections.length);
+                const wordInfo = placedWordDirections[index];
+                if (!hintWords.includes(wordInfo)) {
+                    hintWords.push(wordInfo);
+                }
+            }
+
+            hintWords.forEach(wordInfo => {
+                const { start, direction, reverse, word } = wordInfo;
+                const wordToPlace = reverse ? words[displayWords.indexOf(word)].split('').reverse().join('') : words[displayWords.indexOf(word)];
+                const dir = [
+                    { dr: 0, dc: 1, name: 'ngang phải' },
+                    { dr: 0, dc: -1, name: 'ngang trái' },
+                    { dr: 1, dc: 0, name: 'dọc xuống' },
+                    { dr: -1, dc: 0, name: 'dọc lên' },
+                    { dr: 1, dc: 1, name: 'chéo xuống phải' },
+                    { dr: -1, dc: 1, name: 'chéo lên phải' },
+                    { dr: 1, dc: -1, name: 'chéo xuống trái' },
+                    { dr: -1, dc: -1, name: 'chéo lên trái' }
+                ].find(d => d.name === direction);
+
+                for (let i = 0; i < wordToPlace.length; i++) {
+                    const r = start.row + i * dir.dr;
+                    const c = start.col + i * dir.dc;
+                    const cell = document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
+                    if (cell) cell.classList.add('hint');
+                }
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.cell.hint').forEach(cell => cell.classList.remove('hint'));
+            }, 7000);
+        }
+
         function renderGrid() {
             const puzzle = document.getElementById('puzzle');
             puzzle.innerHTML = '';
-            puzzle.style.gridTemplateColumns = `repeat(${gridSize}, 35px)`;
+            puzzle.style.gridTemplateColumns = `repeat(${gridSize}, 38px)`;
             puzzle.style.display = 'grid';
 
             for (let r = 0; r < gridSize; r++) {
@@ -354,7 +400,7 @@
         function getCellFromCoordinates(x, y) {
             const puzzle = document.getElementById('puzzle');
             const rect = puzzle.getBoundingClientRect();
-            const cellWidth = window.innerWidth <= 768 ? 28 : 35;
+            const cellWidth = window.innerWidth <= 768 ? 34 : 38;
             const col = Math.floor((x - rect.left) / cellWidth);
             const row = Math.floor((y - rect.top) / cellWidth);
             if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
@@ -463,8 +509,8 @@
                 });
                 renderWordList();
                 confetti({
-                    particleCount: 100,
-                    spread: 70,
+                    particleCount: 80,
+                    spread: 60,
                     origin: { y: 0.6 },
                     colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
                 });
