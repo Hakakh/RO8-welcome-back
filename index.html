@@ -114,7 +114,7 @@
     <div class="container">
         <div>
             <div id="puzzle"></div>
-            <div id="status">Đã tìm: 0/46 từ</div>
+            <div id="status">Đã tìm: 0/50 từ</div>
             <div id="timer">Thời gian: 00:00</div>
             <div id="high-score">Điểm cao: 0 từ, Thời gian tốt nhất: chưa có</div>
             <div id="error-message"></div>
@@ -129,27 +129,23 @@
         const words = [
             'young', 'tall', 'black', 'mid-twenties', 'short', 'slim', 'curly', 'old', 'blue', 'chubby',
             'brown', 'straight', 'long', 'of medium height', 'blond', 'Age', 'Hair', 'Weight', 'Height',
-            'talkative-talks a lot', 'cheerful-smiles a lot', 'impatient-hates waiting for things',
-            'bossy-like telling people what to do', 'generous-likes giving people things',
-            'popular-lots of people like him/her', 'selfish-only cares about himself/herself',
-            'honest-always tell the truth', 'energetic-does a lot of things', 'vibrant', 'pull it off with',
-            'orange', 'steak', 'pasta', 'cabbage', 'rice', 'chicken', 'egg', 'milk', 'fish', 'cereal',
-            'grapes', 'bread', 'biscuits', 'butter', 'fruit & vegetables', 'carbohydrates', 'proteins', 'fats',
-            'paint your face', 'wear traditional clothes', 'play games', 'eat a traditional meal',
-            'watch a fireworks display', 'listen to a band'
+            'talkative', 'cheerful', 'impatient', 'bossy', 'generous', 'popular', 'selfish', 'honest',
+            'energetic', 'vibrant', 'pull it off with', 'orange', 'steak', 'pasta', 'cabbage', 'rice',
+            'chicken', 'egg', 'milk', 'fish', 'cereal', 'grapes', 'bread', 'biscuits', 'butter',
+            'fruit & vegetables', 'carbohydrates', 'proteins', 'fats', 'paint your face',
+            'wear traditional clothes', 'play games', 'eat a traditional meal', 'watch a fireworks display',
+            'listen to a band'
         ].map(word => word.toUpperCase().replace(/[- &]/g, ''));
 
         const displayWords = [
             'young', 'tall', 'black', 'mid-twenties', 'short', 'slim', 'curly', 'old', 'blue', 'chubby',
             'brown', 'straight', 'long', 'of medium height', 'blond', 'Age', 'Hair', 'Weight', 'Height',
-            'talkative-talks a lot', 'cheerful-smiles a lot', 'impatient-hates waiting for things',
-            'bossy-like telling people what to do', 'generous-likes giving people things',
-            'popular-lots of people like him/her', 'selfish-only cares about himself/herself',
-            'honest-always tell the truth', 'energetic-does a lot of things', 'vibrant', 'pull it off with',
-            'orange', 'steak', 'pasta', 'cabbage', 'rice', 'chicken', 'egg', 'milk', 'fish', 'cereal',
-            'grapes', 'bread', 'biscuits', 'butter', 'fruit & vegetables', 'carbohydrates', 'proteins', 'fats',
-            'paint your face', 'wear traditional clothes', 'play games', 'eat a traditional meal',
-            'watch a fireworks display', 'listen to a band'
+            'talkative', 'cheerful', 'impatient', 'bossy', 'generous', 'popular', 'selfish', 'honest',
+            'energetic', 'vibrant', 'pull it off with', 'orange', 'steak', 'pasta', 'cabbage', 'rice',
+            'chicken', 'egg', 'milk', 'fish', 'cereal', 'grapes', 'bread', 'biscuits', 'butter',
+            'fruit & vegetables', 'carbohydrates', 'proteins', 'fats', 'paint your face',
+            'wear traditional clothes', 'play games', 'eat a traditional meal', 'watch a fireworks display',
+            'listen to a band'
         ];
 
         const colorSets = [
@@ -158,8 +154,9 @@
             '#808000', '#ffd8b1', '#000075', '#808080', '#ff4500', '#da70d6', '#eee8aa', '#98fb98',
             '#1e90ff', '#ff69b4', '#ba55d3', '#cd5c5c', '#20b2aa', '#9932cc', '#ff6347', '#00ced1',
             '#ff7f50', '#4682b4', '#9acd32', '#dc143c', '#00b7eb', '#ff4040', '#228b22', '#ff00ff',
-            '#7b68ee', '#deb887', '#ff1493', '#6b8e23', '#b22222', '#20b2aa'
-        ]; // 46 màu
+            '#7b68ee', '#deb887', '#ff1493', '#6b8e23', '#b22222', '#20b2aa', '#8b008b', '#00ff7f',
+            '#b8860b', '#5f9ea0'
+        ]; // 50 màu
 
         const gridSize = 40;
         let grid = [];
